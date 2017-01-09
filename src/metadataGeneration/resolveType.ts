@@ -23,32 +23,8 @@ export function ResolveType(typeNode: ts.TypeNode): Type {
       elementType: ResolveType(arrayType.elementType)
     };
   }
-  if (typeNode.kind === ts.SyntaxKind.TypeAliasDeclaration) {
-console.log("alias type")
-    return 'object';
-  }
 
-  if (typeNode.kind === ts.SyntaxKind.LiteralType) {
-console.log("string literal")
-// let u = typeNode as ts.StringLiteral
-// u.types.map((val, idx) => {
-//   console.log(`${idx} is ${val.getText()}`)
-//   val.getChildren().map((node,nodeIdx) => {
-//     console.log(`  ${nodeIdx} is ${node.getText()} and ${node.getFullText()}`)
-//   })
-// })
-    return 'object';
-
-  }
   if (typeNode.kind === ts.SyntaxKind.UnionType) {
-// console.log("union type")
-// let u = typeNode as ts.UnionTypeNode
-// u.types.map((val, idx) => {
-//   console.log(`${idx} is ${val.getText()}`)
-//   val.getChildren().map((node,nodeIdx) => {
-//     console.log(`  ${nodeIdx} is ${node.getText()} and ${node.getFullText()}`)
-//   })
-// })
     return 'object';
   }
 
@@ -56,9 +32,6 @@ console.log("string literal")
     throw new Error(`Unknown type: ${ts.SyntaxKind[typeNode.kind]}`);
   }
   let typeReference: any = typeNode;
-  if (typeReference.typeName.text === 'StrLiteral') {
-    console.log(`found type ref: ${typeReference.typeName.text}`) // can make it string in this case..
-  }
   if (typeReference.typeName.text === 'Date') {
     return 'datetime';
   }
@@ -90,10 +63,10 @@ function generateReferenceType(typeName: string, cacheReferenceType = true): Ref
     properties: properties
   };
   if (modelTypeDeclaration.kind === ts.SyntaxKind.TypeAliasDeclaration) {
-    let innerType = modelTypeDeclaration.type
+    let innerType = modelTypeDeclaration.type;
     if (innerType.kind === ts.SyntaxKind.UnionType && (innerType as any).types) {
-      let unionTypes = (innerType as any).types
-      referenceType.enum = unionTypes.map((unionNode:any) => unionNode.literal.text as string)
+      let unionTypes = (innerType as any).types;
+      referenceType.enum = unionTypes.map((unionNode: any) => unionNode.literal.text as string);
     }
   }
 
@@ -135,11 +108,9 @@ function getModelTypeDeclaration(typeName: string) {
         return false;
       default: return true;
     }
-    // if ((node.kind !== ts.SyntaxKind.InterfaceDeclaration && node.kind !== ts.SyntaxKind.ClassDeclaration) || !MetadataGenerator.current.IsExportedNode(node)) {
   };
   const modelTypes = MetadataGenerator.current.nodes
     .filter(node => {
-      // if ((node.kind !== ts.SyntaxKind.InterfaceDeclaration && node.kind !== ts.SyntaxKind.ClassDeclaration) || !MetadataGenerator.current.IsExportedNode(node)) {
       if (nodeIsNotUsable(node) || !MetadataGenerator.current.IsExportedNode(node)) {
         return false;
       }
@@ -175,7 +146,13 @@ function getModelTypeProperties(node: UsableDeclaration) {
   }
 
   if (node.kind === ts.SyntaxKind.TypeAliasDeclaration) {
-    return []; // assuming that we're just doing string literal enums, this shoudl be fine
+    /**
+     * TOOD
+     * 
+     * Flesh this out so that we can properly support Type Alii instead of just assuming
+     * string literal enums
+    */
+    return [];
   }
 
   const classDeclaration = node as ts.ClassDeclaration;
@@ -216,7 +193,7 @@ function hasPublicModifier(node: ts.Node) {
 function getInheritedProperties(modelTypeDeclaration: UsableDeclaration): Property[] {
   const properties = new Array<Property>();
   if (modelTypeDeclaration.kind === ts.SyntaxKind.TypeAliasDeclaration) {
-    return []
+    return [];
   }
   const heritageClauses = modelTypeDeclaration.heritageClauses;
   if (!heritageClauses) { return properties; }

@@ -13,6 +13,23 @@ const models: any = {
     'circular': { typeName: 'TestModel', required: false },
     'id': { typeName: 'number', required: true },
   },
+  'StrLiteral': {
+  },
+  'TestModel': {
+    'numberValue': { typeName: 'number', required: true },
+    'numberArray': { typeName: 'array', required: true, arrayType: 'number' },
+    'stringValue': { typeName: 'string', required: true },
+    'stringArray': { typeName: 'array', required: true, arrayType: 'string' },
+    'boolValue': { typeName: 'boolean', required: true },
+    'boolArray': { typeName: 'array', required: true, arrayType: 'boolean' },
+    'modelValue': { typeName: 'TestSubModel', required: true },
+    'modelsArray': { typeName: 'array', required: true, arrayType: 'TestSubModel' },
+    'strLiteralVal': { typeName: 'StrLiteral', required: true },
+    'strLiteralArr': { typeName: 'array', required: true, arrayType: 'StrLiteral' },
+    'dateValue': { typeName: 'datetime', required: false },
+    'optionalString': { typeName: 'string', required: false },
+    'id': { typeName: 'number', required: true },
+  },
   'TestClassModel': {
     'publicStringProperty': { typeName: 'string', required: true },
     'optionalPublicStringProperty': { typeName: 'string', required: false },

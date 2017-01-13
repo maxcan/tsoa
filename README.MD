@@ -171,3 +171,66 @@ Options:
 [An example project is available here](https://github.com/lukeautry/tsoa-example)
 
 Also see example controllers in [the tests](tests/fixtures/controllers)
+
+## Common Errors
+
+### Cannot read property 'toLowerCase' of undefined
+
+This can potentially have multiple causes.
+
+#### Qualified imports
+
+Change this:
+
+```typescript
+import * as Models from "./models"
+export class FoosController {
+    @Post()
+    public async newFoo(name: string): Promise<Models.Foo> {
+      ...
+    }
+}
+
+```
+
+to:
+
+```typescript
+import {Foo} from "./models"
+export class FoosController {
+    @Post()
+    public async newFoo(name: string): Promise<Foo> {
+      ...
+    }
+}
+
+```
+#### More TBD
+
+### Unknown type: TypeLiteral
+
+This is due to using type literals in the arguments
+or return values of your controller.  So, change something like:
+
+```typescript
+export class FoosController {
+    @Post()
+    public async newFoo(body: { title: string, age: number }): Promise<ApiFoo> {
+      ...
+    }
+}
+
+```
+
+to:
+
+```typescript
+interface newFooArgs { title: string, age: number }
+
+export class FoosController {
+    @Post()
+    public async newFoo(body: newFooArgs): Promise<ApiFoo> {
+      ...
+    }
+}
+```
